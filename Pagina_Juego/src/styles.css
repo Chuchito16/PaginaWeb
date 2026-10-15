@@ -401,3 +401,6 @@ h2 em { font-style: normal; }
   .footer { padding-inline: 20px; }
   .source-links strong { font-size: 15px; }
 }
+
+.player-browser-url { width: min(100%, 540px); padding: 12px; margin: 0 0 16px; border: 1px solid #bf99a0; background: #fff; color: #49383d; font: inherit; font-size: 14px; text-align: center; }
+.player-browser-url:focus-visible { outline: 3px solid #a51f33; outline-offset: 3px; }

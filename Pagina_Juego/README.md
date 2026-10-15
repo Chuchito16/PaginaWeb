@@ -1,6 +1,6 @@
 # Nuestra casa compartida
 
-Página en español creada con React y Vite para presentar la novela gráfica de Cali e integrar una exportación web de Unity. El juego no viene incluido: permanece en desarrollo.
+Página en español creada con React y Vite para presentar la novela gráfica de Cali e integrar una exportación web de Unity. Incluye la compilación web de Unity importada desde UnityWebBuild.
 
 ## Iniciar
 
@@ -11,12 +11,20 @@ npm install
 npm run dev
 ```
 
-Abre la dirección que imprime Vite. Para producción: `npm run build`; el resultado queda en `dist`. Para comprobar esa versión: `npm run preview`.
+Vite abre automáticamente el navegador predeterminado del sistema. Usa Microsoft Edge o Google Chrome para jugar con sonido. Para producción: `npm run build`; el resultado queda en `dist`. Para comprobar esa versión: `npm run preview`.
+
+### Audio y vista integrada de VS Code
+
+El build Web de Unity contiene clips AAC. El visor integrado de VS Code no admite ese códec y puede mostrar `EncodingError: Unable to decode audio data`. No es un error de Vite ni se resuelve concediendo permiso de reproducción automática. La página comprueba la compatibilidad antes de cargar Unity y ofrece copiar la dirección cuando el visor no admite el audio.
+
+Si Vite ya estaba abierto, reinícialo con `npm run dev`, o copia su dirección local a Edge/Chrome fuera de VS Code. Haz clic dentro del juego para habilitar la reproducción y revisa que sus ajustes de volumen no estén en silencio. El cambio no modifica los clips ni silencia errores de Unity.
+
+Referencias: [Audio Web de Unity](https://docs.unity.com/en-us/engine/6000.3/manual/platform-specific/webgl/develop/audio) y [formatos de audio admitidos por VS Code](https://code.visualstudio.com/api/extension-guides/webview#supported-media-formats).
 
 ## Incorporar el juego Unity
 
 1. En Unity instala el módulo Web Build Support si hace falta, selecciona la plataforma Web y añade las escenas necesarias.
-2. En Player Settings > Publishing Settings, usa **Compression Format: Disabled** para la primera integración. Como alternativa, activa **Decompression Fallback**: Unity generará archivos `.unityweb`, adecuados para este servidor estático sin configurar cabeceras de compresión. La ruta exacta del menú puede variar con la versión del editor.
+2. Puedes exportar sin compresión, con Decompression Fallback o con Gzip/Brotli. El importador descomprime los archivos .gz/.br dentro de la copia web y ajusta sus rutas para que funcionen en Vite y en hosting estático. La exportación original no se modifica.
 3. Exporta con la plantilla web predeterminada a una carpeta independiente. Debe contener `index.html`, `Build/`, `TemplateData/` y, si se genera, `StreamingAssets/`.
 4. Desde esta carpeta ejecuta:
 
@@ -27,9 +35,9 @@ npm run unity:import -- "C:\ruta\a\la\exportacion-Web"
 5. En la página pulsa **Comprobar disponibilidad**. El botón **Comenzar el juego** aparecerá cuando la exportación esté disponible. Se carga únicamente al pulsarlo.
 6. Para publicar una actualización, repite la importación y `npm run build`.
 
-El importador conserva los nombres generados por Unity y copia toda la exportación a `public/unity/`; no requiere editar las rutas `.wasm` a mano. Las siguientes importaciones reemplazan archivos coincidentes, pero no eliminan archivos antiguos. Conviene usar nombres de compilación consistentes. No incluyas datos privados en la carpeta exportada: todo su contenido será público al desplegar el sitio.
+El importador conserva los nombres base generados por Unity (quita .gz/.br al descomprimir) y copia toda la exportación a `public/unity/`; no requiere editar las rutas `.wasm` a mano. Las siguientes importaciones reemplazan archivos coincidentes, pero no eliminan archivos antiguos. Conviene usar nombres de compilación consistentes. No incluyas datos privados en la carpeta exportada: todo su contenido será público al desplegar el sitio.
 
-La integración usa un iframe con pantalla completa y apertura en otra pestaña. El evento de carga del iframe solo confirma la apertura del HTML; el progreso, los errores del motor, el audio, los controles y el tamaño del canvas corresponden a la plantilla de Unity. Adapta el canvas del juego a su contenedor si su plantilla usa un tamaño fijo. Prueba el juego real en los equipos de destino; la adaptación de la web no garantiza que cualquier compilación Unity funcione en móviles. Esta página no envía selecciones de capítulos a Unity ni guarda partidas: la navegación y el progreso pertenecen al juego.
+La integración usa un iframe con pantalla completa y apertura en otra pestaña. El evento de carga del iframe solo confirma la apertura del HTML; el progreso, los errores del motor, el audio, los controles y el tamaño del canvas corresponden a la plantilla de Unity. El importador adapta la plantilla predeterminada al tamaño del iframe y oculta su pie de página duplicado. Prueba el juego real en los equipos de destino; la adaptación de la web no garantiza que cualquier compilación Unity funcione en móviles. Esta página no envía selecciones de capítulos a Unity ni guarda partidas: la navegación y el progreso pertenecen al juego.
 
 Documentación: https://docs.unity.com/en-us/engine/6000.5/manual/platform-specific/webgl/building-distribution/deploying
 
@@ -60,3 +68,7 @@ Fuentes enlazadas: Alcaldía de Cali, Servicio Geológico Colombiano, UNGRD y CV
 ## Identidad visual actual
 
 Referencia de estilo: https://www.uao.edu.co/estudiante/ . Barra de utilidad vinotinto, navegación marfil, portada panorámica ilustrada, acentos rojos, enlaces con flecha y contenido sobre fondo blanco. El sitio conserva el nombre del proyecto y se identifica como proyecto académico; no reproduce menús, servicios ni el logotipo institucional. La ilustración original de Cali se muestra en la portada. Las interacciones y la integración de Unity se conservan.
+
+## Compilación integrada
+
+Exportación de origen: C:\Users\PC31A1\Desktop\UnityWebBuild. Fecha de integración: 14 de octubre de 2026. Carpeta del sitio: C:\Users\PC31A1\Desktop\PaginaWeb\Pagina_Juego. Para actualizar el juego: npm run unity:import -- "C:\Users\PC31A1\Desktop\UnityWebBuild", seguido de npm run build.
